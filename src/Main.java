@@ -205,6 +205,7 @@ public class Main {
             System.out.println(r);
         }
 
+
         System.out.println();
         System.out.println("ADRES TESTS:");
         System.out.println("\nSave & findAll:");
@@ -224,6 +225,7 @@ public class Main {
 
         System.out.println(adao.findByReiziger(reiziger));
         System.out.println();
+
 
         System.out.println("PRODUCT TEST:");
         System.out.println("\nSave & findAll:");
@@ -247,6 +249,7 @@ public class Main {
             }
         }
 
+
         System.out.println("\nOVCHIPKAART TEST:");
         System.out.println("\nSave & findAll:");
         for (OVChipkaart o : odao.findAll()){
@@ -257,14 +260,14 @@ public class Main {
         for (OVChipkaart o : odao.findAll()){
             System.out.println(o);
         }
-        System.out.println("\nUpdate");
+        System.out.println("\nUpdate + findByReiziger: ");
         ovChip.setSaldo(999.99F);
         odao.update(ovChip);
-        for (OVChipkaart o : odao.findAll()){
-            if (o == ovChip){
-                System.out.println(o);
-            }
-        }
+
+        System.out.println(odao.findByReiziger(reiziger));
+
+        System.out.println("\nPRODUCT test findByOvchipkaart: ");
+        System.out.println(pdao.findByOVChipkaart(ovChip));
 
         System.out.println();
         System.out.println("DELETE ALL");

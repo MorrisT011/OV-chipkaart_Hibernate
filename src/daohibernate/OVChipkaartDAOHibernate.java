@@ -73,7 +73,7 @@ public class OVChipkaartDAOHibernate implements OVChipkaartDAO {
     @Override
     public List<OVChipkaart> findByReiziger(Reiziger reiziger) {
         try {
-            List<OVChipkaart> ovChipkaartList = session.createQuery("FROM OVChipkaart WHERE id = " + reiziger.getId(), OVChipkaart.class).list();
+            List<OVChipkaart> ovChipkaartList = session.createQuery("FROM OVChipkaart WHERE reiziger_id = " + reiziger.getId(), OVChipkaart.class).list();
 
             return ovChipkaartList;
 
