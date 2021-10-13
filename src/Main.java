@@ -2,6 +2,10 @@ import Domain.Adres;
 import Domain.OVChipkaart;
 import Domain.Product;
 import Domain.Reiziger;
+import daohibernate.AdresDAOHibernate;
+import daohibernate.OVChipkaartDAOHibernate;
+import daohibernate.ProductDAOHibernate;
+import daohibernate.ReizigerDAOHibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -51,7 +55,8 @@ public class Main {
 //        testFetchAll();
 //        testOneToOne();
 //        testOneToMany();
-        testManytoMany();
+//        testManytoMany();
+        test1();
 
     }
 
@@ -79,8 +84,8 @@ public class Main {
     private static void testOneToOne() {
         Session session = getSession();
 
-        Reiziger reiziger = new Reiziger("M.", "", "Tular", Date.valueOf("1999-09-03"));
-        Adres adres = new Adres("5482LE", "21", "Voortstraat", "Schijndel");
+        Reiziger reiziger = new Reiziger(418L, "M.", "", "Tular", Date.valueOf("1999-09-03"));
+        Adres adres = new Adres(333L, "5482LE", "21", "Voortstraat", "Schijndel");
 
         Transaction trans = session.beginTransaction();
 
@@ -99,9 +104,9 @@ public class Main {
     private static void testOneToMany() {
         Session session = getSession();
 
-        Reiziger reiziger = new Reiziger("M.", "", "Tular", Date.valueOf("1999-09-03"));
-        OVChipkaart ovChipkaart1 = new OVChipkaart(Date.valueOf("2022-01-01"), 2, 0.0F);
-        OVChipkaart ovChipkaart2 = new OVChipkaart(Date.valueOf("2022-01-01"), 2, 10.0F);
+        Reiziger reiziger = new Reiziger(419L, "M.", "", "Tular", Date.valueOf("1999-09-03"));
+        OVChipkaart ovChipkaart1 = new OVChipkaart(11111, Date.valueOf("2022-01-01"), 2, 0.0F);
+        OVChipkaart ovChipkaart2 = new OVChipkaart(22222, Date.valueOf("2022-01-01"), 2, 10.0F);
 
         List<OVChipkaart> kaarten = new ArrayList<>();
         kaarten.add(ovChipkaart1);
@@ -119,19 +124,26 @@ public class Main {
 
     private static void testManytoMany() {
         Session session = getSession();
+        Transaction trans = session.beginTransaction();
 
-        Reiziger reiziger = new Reiziger("M.", "", "Tular", Date.valueOf("1999-09-03"));
 
-        OVChipkaart ovChipkaart1 = new OVChipkaart(Date.valueOf("2022-01-01"), 2, 0.0F);
+        Reiziger reiziger = new Reiziger(420L ,"M.", "", "Tular", Date.valueOf("1999-09-03"));
+
+        OVChipkaart ovChipkaart1 = new OVChipkaart(88888, Date.valueOf("2022-01-01"), 2, 0.0F);
+        OVChipkaart ovChipkaart2 = new OVChipkaart(99999, Date.valueOf("2024-01-01"), 1, 10.0F);
+
+        Product product1 = new Product(10L, "Test1", "Test1", 5.0F);
+        Product product2 = new Product(20L, "Test2", "Test2", 15.0F);
+
         ovChipkaart1.setReiziger(reiziger);
-        OVChipkaart ovChipkaart2 = new OVChipkaart(Date.valueOf("2024-01-01"), 1, 10.0F);
         ovChipkaart2.setReiziger(reiziger);
 
-        Product product1 = new Product("Test1", "Test1", 5.0F);
-        Product product2 = new Product("Test2", "Test2", 15.0F);
+        ovChipkaart1.addProduct(product1);
+        ovChipkaart1.addProduct(product2);
 
-        List<Product> products = new ArrayList<>();
-        products.add(product1); products.add(product2);
+        ovChipkaart2.addProduct(product1);
+        ovChipkaart2.addProduct(product2);
+
 
         List<OVChipkaart> ovChipkaarts = new ArrayList<>();
         ovChipkaarts.add(ovChipkaart1); ovChipkaarts.add(ovChipkaart1); ovChipkaarts.add(ovChipkaart1);
@@ -139,20 +151,132 @@ public class Main {
         reiziger.setOVChipkaarten(ovChipkaarts);
 
         session.save(reiziger);
+        session.save(ovChipkaart1);
+        session.save(ovChipkaart2);
+        session.save(product1);
+        session.save(product2);
 
-
-        for (OVChipkaart o : ovChipkaarts) {
-            Transaction trans = session.beginTransaction();
-            session.save(o);
-            trans.commit();
-        }
-
-        for (Product p : products) {
-            Transaction trans2 = session.beginTransaction();
-            session.save(p);
-            trans2.commit();
-        }
+        trans.commit();
 
         session.close();
+    }
+
+
+
+    private static void test1() {
+        AdresDAOHibernate adao = new AdresDAOHibernate(getSession());
+        ReizigerDAOHibernate rdao = new ReizigerDAOHibernate(getSession());
+        OVChipkaartDAOHibernate odao = new OVChipkaartDAOHibernate(getSession());
+        ProductDAOHibernate pdao = new ProductDAOHibernate(getSession());
+
+        Reiziger reiziger = new Reiziger(421L, "M", "", "Tular", Date.valueOf("1999-09-03"));
+        Adres adres = new Adres(444L, "5482LE", "21", "Hoofdstraat", "Schijndel");
+        adres.setReiziger(reiziger);
+
+        OVChipkaart ovChip = new OVChipkaart(66666, Date.valueOf("2023-01-01"), 1, 42.00F);
+        ovChip.setReiziger(reiziger);
+
+        Product product = new Product(66666L, "Test", "Test product voor DP", 7.50F);
+        ovChip.addProduct(product);
+
+        Reiziger rzgr = new Reiziger(1L, "G", "van", "Rijn", Date.valueOf("2002-09-17"));
+        Reiziger rzg = new Reiziger(2L,"B", "van", "Rijn", Date.valueOf("2002-10-22"));
+        rzgr.setId(1L);
+        rzgr.setId(2L);
+
+        System.out.println("REIZIGER TESTS:");
+        System.out.println("\nSave & findAll:");
+        for (Reiziger r : rdao.findAll()){
+            System.out.println(r);
+        }
+        System.out.println();
+        rdao.save(reiziger);
+        for (Reiziger r : rdao.findAll()){
+            System.out.println(r);
+        }
+
+        System.out.println("\nUpdate & findById:");
+        reiziger.setAchternaam("TEST");
+        rdao.update(reiziger);
+        System.out.println(rdao.findById(reiziger.getId()));
+
+        System.out.println("\nfindByGbD:");
+        for (Reiziger r : rdao.findByGbdatum("2002-12-03")){
+            System.out.println(r);
+        }
+
+        System.out.println();
+        System.out.println("ADRES TESTS:");
+        System.out.println("\nSave & findAll:");
+
+        for (Adres a : adao.findAll()) {
+            System.out.println(a);
+        }
+        System.out.println();
+        adao.save(adres);
+        for (Adres a : adao.findAll()) {
+            System.out.println(a);
+        }
+
+        System.out.println("\nUpdate & findByReiziger:");
+        adres.setPostcode("6666AA");
+        adao.update(adres);
+
+        System.out.println(adao.findByReiziger(reiziger));
+        System.out.println();
+
+        System.out.println("PRODUCT TEST:");
+        System.out.println("\nSave & findAll:");
+        for (Product p : pdao.findAll()){
+            System.out.println(p);
+        }
+        odao.save(ovChip);
+        pdao.save(product);
+        System.out.println();
+        for (Product p : pdao.findAll()){
+            System.out.println(p);
+        }
+
+        System.out.println("\nUpdate:");
+        product.setBeschrijving("De beschrijving is veranderd");
+        pdao.update(product);
+
+        for (Product p : pdao.findAll()) {
+            if (p == product) {
+                System.out.println(p);
+            }
+        }
+
+        System.out.println("\nOVCHIPKAART TEST:");
+        System.out.println("\nSave & findAll:");
+        for (OVChipkaart o : odao.findAll()){
+            System.out.println(o);
+        }
+        System.out.println();
+
+        for (OVChipkaart o : odao.findAll()){
+            System.out.println(o);
+        }
+        System.out.println("\nUpdate");
+        ovChip.setSaldo(999.99F);
+        odao.update(ovChip);
+        for (OVChipkaart o : odao.findAll()){
+            if (o == ovChip){
+                System.out.println(o);
+            }
+        }
+
+        System.out.println();
+        System.out.println("DELETE ALL");
+        pdao.delete(product);
+
+        odao.delete(ovChip);
+
+        adao.delete(adres);
+
+        rdao.delete(reiziger);
+        System.out.println("Kijk of reiziger nog bestaat:");
+        System.out.println(rdao.findById(reiziger.getId()));
+
     }
 }

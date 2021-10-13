@@ -9,7 +9,6 @@ import java.util.List;
 public class Reiziger {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "reiziger_id")
     private Long id;
 
@@ -32,7 +31,8 @@ public class Reiziger {
     private List<OVChipkaart> OVChipkaarten = new ArrayList<>();
 
 
-    public Reiziger(String voorletters, String tussenvoegsels, String achternaam, Date geboortedatum) {
+    public Reiziger(Long id, String voorletters, String tussenvoegsels, String achternaam, Date geboortedatum) {
+        this.id = id;
         this.voorletters = voorletters;
         this.tussenvoegsel = tussenvoegsels;
         this.achternaam = achternaam;
@@ -75,6 +75,22 @@ public class Reiziger {
         this.adres = adres;
     }
 
+    public void setVoorletters(String voorletters) {
+        this.voorletters = voorletters;
+    }
+
+    public void setTussenvoegsel(String tussenvoegsel) {
+        this.tussenvoegsel = tussenvoegsel;
+    }
+
+    public void setAchternaam(String achternaam) {
+        this.achternaam = achternaam;
+    }
+
+    public void setGeboortedatum(Date geboortedatum) {
+        this.geboortedatum = geboortedatum;
+    }
+
     public List<OVChipkaart> getOVChipkaarten() {
         return OVChipkaarten;
     }
@@ -88,7 +104,7 @@ public class Reiziger {
 
     @Override
     public String toString() {
-        return "Domain.Reiziger: " + "id: " + id + ", voorletters: '" + voorletters + '\'' +
+        return "Reiziger: " + "id: " + id + ", voorletters: '" + voorletters + '\'' +
                 ", tussenvoegsels: '" + tussenvoegsel + '\'' + ", achternaam: '" +
                 achternaam + '\'' + ", geboortedatum: " + geboortedatum;
     }

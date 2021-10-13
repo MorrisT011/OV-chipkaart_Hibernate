@@ -9,7 +9,7 @@ import java.util.List;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long product_nummer;
     private String naam;
     private String beschrijving;
@@ -27,7 +27,8 @@ public class Product {
 
 
 
-    public Product(String naam, String beschrijving, float prijs) {
+    public Product(Long product_nummer, String naam, String beschrijving, float prijs) {
+        this.product_nummer = product_nummer;
         this.naam = naam;
         this.beschrijving = beschrijving;
         this.prijs = prijs;
@@ -57,6 +58,26 @@ public class Product {
         return OVChipkaarten;
     }
 
+    public void setProduct_nummer(Long product_nummer) {
+        this.product_nummer = product_nummer;
+    }
+
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public void setBeschrijving(String beschrijving) {
+        this.beschrijving = beschrijving;
+    }
+
+    public void setPrijs(float prijs) {
+        this.prijs = prijs;
+    }
+
+    public void setOVChipkaarten(List<OVChipkaart> OVChipkaarten) {
+        this.OVChipkaarten = OVChipkaarten;
+    }
+
     public boolean addOVChipkaart(OVChipkaart ovChipkaart) {
         for (OVChipkaart ov : OVChipkaarten) {
             if (ov.getKaart_nummer() == ovChipkaart.getKaart_nummer()){
@@ -81,7 +102,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Domain.Product: " +
+        return "Product: " +
                 "product_nummer = " + product_nummer +
                 ", naam = '" + naam + '\'' +
                 ", beschrijving = '" + beschrijving + '\'' +

@@ -6,10 +6,10 @@ import javax.persistence.*;
 
 
 @Entity
+@Table(name = "adres")
 public class Adres {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "adres_id")
     private Long adres_id;
 
@@ -25,7 +25,8 @@ public class Adres {
     private Reiziger reiziger;
 
 
-    public Adres(String postcode, String huisnummer, String straat, String woonplaats) {
+    public Adres(Long adres_id, String postcode, String huisnummer, String straat, String woonplaats) {
+        this.adres_id = adres_id;
         this.postcode = postcode;
         this.huisnummer = huisnummer;
         this.straat = straat;
@@ -84,13 +85,16 @@ public class Adres {
         this.reiziger = reiziger;
     }
 
+
+
     @Override
     public String toString() {
-        return "Domain.Adres: " +
+        return "Adres: " +
                 "adres_id: " + adres_id +
                 ", postcode: '" + postcode + '\'' +
                 ", huisnummer: '" + huisnummer + '\'' +
                 ", straat: '" + straat + '\'' +
-                ", woonplaats: '" + woonplaats;
+                ", woonplaats: '" + woonplaats +
+                ", reiziger: " + reiziger.getId();
     }
 }
